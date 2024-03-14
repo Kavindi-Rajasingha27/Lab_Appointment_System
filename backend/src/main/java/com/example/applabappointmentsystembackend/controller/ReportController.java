@@ -1,5 +1,6 @@
 package com.example.applabappointmentsystembackend.controller;
 
+import com.example.applabappointmentsystembackend.dto.AvailableTimeDto;
 import com.example.applabappointmentsystembackend.dto.CommonResponse;
 import com.example.applabappointmentsystembackend.dto.ReportDto;
 import com.example.applabappointmentsystembackend.dto.UserDto;
@@ -66,6 +67,26 @@ public class ReportController {
             ReportDto report = reportService.getReportById(id);
             String msg = report == null ? null: "Report " + id;
             return ResponseEntity.ok(new CommonResponse<>(true, msg, report));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new CommonResponse<>(false, e.getMessage()));
+        }
+    }
+
+    @GetMapping(value = "/technician/{technicianId}")
+    public ResponseEntity getReportsForTechnician(@PathVariable(value = "technicianId") int technicianId) {
+        try {
+            List<ReportDto> reportList = reportService.getReportsForTechnician(technicianId);
+            return ResponseEntity.ok(new CommonResponse<>(true,"All Reports", reportList));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new CommonResponse<>(false, e.getMessage()));
+        }
+    }
+
+    @GetMapping(value = "/patient/{patientId}")
+    public ResponseEntity getReportsForPatient(@PathVariable(value = "patientId") int patientId) {
+        try {
+            List<ReportDto> reportList = reportService.getReportsForPatient(patientId);
+            return ResponseEntity.ok(new CommonResponse<>(true,"All Reports For Patient", reportList));
         } catch (Exception e) {
             return ResponseEntity.ok(new CommonResponse<>(false, e.getMessage()));
         }

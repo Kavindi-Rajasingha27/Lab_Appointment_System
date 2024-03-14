@@ -15,14 +15,14 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class AppointmentServiceImpl implements AppointmentService {
-    private final IdGeneratorService idGeneratorService;
+
     private final AppointmentRepository appointmentRepository;
 
     @Override
     public AppointmentDto addAppointment(AppointmentDto appointmentDto) {
         Appointment newAppointment = new Appointment(
                 appointmentDto,
-                idGeneratorService
+                IdGeneratorService.getInstance()
                 );
         appointmentRepository.save(newAppointment);
         return new AppointmentDto(newAppointment);
@@ -60,5 +60,10 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public List<AppointmentDto> getAllAppointments() {
         return appointmentRepository.findAll().stream().map(AppointmentDto::new).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<AppointmentDto> getAllAppointmentsByDoctor(int doctorId) {
+        return appointmentRepository.findAllByDoctorId(doctorId).stream().map(AppointmentDto::new).collect(Collectors.toList());
     }
 }

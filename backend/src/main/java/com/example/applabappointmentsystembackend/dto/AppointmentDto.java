@@ -14,8 +14,8 @@ import java.util.Date;
 @NoArgsConstructor
 public class AppointmentDto {
     private int id;
-    private String patientId;
-    private String doctorId;
+    private int patientId;
+    private int doctorId;
     private Date dateTime;
     private String payStatus;
 

@@ -1,5 +1,6 @@
 package com.example.applabappointmentsystembackend.service;
 
+import com.example.applabappointmentsystembackend.dto.AvailableTimeDto;
 import com.example.applabappointmentsystembackend.dto.ReportDto;
 import com.example.applabappointmentsystembackend.dto.UserDto;
 import org.springframework.stereotype.Service;
@@ -13,4 +14,6 @@ public interface ReportService {
     void deleteReport(int reportId);
     ReportDto getReportById(int reportId);
     List<ReportDto> getAllReports();
+    List<ReportDto> getReportsForTechnician(int technicianId);
+    List<ReportDto> getReportsForPatient(int patientId);
 }

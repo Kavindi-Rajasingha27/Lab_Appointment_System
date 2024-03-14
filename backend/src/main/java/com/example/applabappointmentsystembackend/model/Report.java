@@ -4,7 +4,6 @@ import com.example.applabappointmentsystembackend.dto.ReportDto;
 import com.example.applabappointmentsystembackend.service.IdGeneratorService.IdGeneratorService;
 import lombok.*;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Map;
@@ -25,11 +24,11 @@ public class Report {
     private String paymentStatus;
     private int doctorId;
     private int patientId;
-    private int technitianId;
+    private int technicianId;
     private int appointmentId;
 
     public Report(int id, String testType, Map<String, Object> paramArray, String description, String paymentStatus,
-                  int doctorId, int patientId, int technitianId, int appointmentId, IdGeneratorService idGeneratorService) {
+                  int doctorId, int patientId, int technicianId, int appointmentId, IdGeneratorService idGeneratorService) {
         this.id = idGeneratorService.generateNextId("reports");
         this.testType = testType;
         this.paramArray = paramArray;
@@ -37,12 +36,12 @@ public class Report {
         this.paymentStatus = paymentStatus;
         this.doctorId = doctorId;
         this.patientId = patientId;
-        this.technitianId = technitianId;
+        this.technicianId = technicianId;
         this.appointmentId = appointmentId;
     }
 
     public Report(String testType, Map<String, Object> paramArray, String description, String paymentStatus,
-                  int doctorId, int patientId, int technitianId, int appointmentId, IdGeneratorService idGeneratorService) {
+                  int doctorId, int patientId, int technicianId, int appointmentId, IdGeneratorService idGeneratorService) {
         this.id = idGeneratorService.generateNextId("reports");
         this.testType = testType;
         this.paramArray = paramArray;
@@ -50,7 +49,7 @@ public class Report {
         this.paymentStatus = paymentStatus;
         this.doctorId = doctorId;
         this.patientId = patientId;
-        this.technitianId = technitianId;
+        this.technicianId = technicianId;
         this.appointmentId = appointmentId;
     }
 
@@ -62,7 +61,7 @@ public class Report {
         this.paymentStatus = reportDto.getPaymentStatus();
         this.doctorId = reportDto.getDoctorId();
         this.patientId = reportDto.getPatientId();
-        this.technitianId = reportDto.getTechnitianId();
+        this.technicianId = reportDto.getTechnicianId();
         this.appointmentId = reportDto.getAppointmentId();
     }
 
@@ -73,7 +72,7 @@ public class Report {
         this.paymentStatus = reportDto.getPaymentStatus();
         this.doctorId = reportDto.getDoctorId();
         this.patientId = reportDto.getPatientId();
-        this.technitianId = reportDto.getTechnitianId();
+        this.technicianId = reportDto.getTechnicianId();
         this.appointmentId = reportDto.getAppointmentId();
     }
 }

@@ -1,14 +1,10 @@
 package com.example.applabappointmentsystembackend.service.impl;
 
 import com.example.applabappointmentsystembackend.dto.ReportDto;
-import com.example.applabappointmentsystembackend.dto.UserDto;
 import com.example.applabappointmentsystembackend.model.Report;
-import com.example.applabappointmentsystembackend.model.User;
 import com.example.applabappointmentsystembackend.repository.ReportRepository;
-import com.example.applabappointmentsystembackend.repository.UserRepository;
 import com.example.applabappointmentsystembackend.service.IdGeneratorService.IdGeneratorService;
 import com.example.applabappointmentsystembackend.service.ReportService;
-import com.example.applabappointmentsystembackend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,13 +15,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ReportServiceImpl implements ReportService {
 
-    private final IdGeneratorService idGeneratorService;
+
 
     private final ReportRepository reportRepository;
 
     @Override
     public ReportDto generateReport(ReportDto reportDto) {
-            Report report = new Report(reportDto, idGeneratorService);
+            Report report = new Report(reportDto, IdGeneratorService.getInstance());
             reportRepository.save(report);
             return new ReportDto(report);
     }
@@ -39,7 +35,7 @@ public class ReportServiceImpl implements ReportService {
             existingReport.setDoctorId(updatedReportDto.getDoctorId());
             existingReport.setPatientId(updatedReportDto.getPatientId());
             existingReport.setAppointmentId(updatedReportDto.getAppointmentId());
-            existingReport.setTechnitianId(updatedReportDto.getTechnitianId());
+            existingReport.setTechnicianId(updatedReportDto.getTechnicianId());
             existingReport.setPaymentStatus(updatedReportDto.getPaymentStatus());
 
             return reportRepository.save(existingReport);
@@ -64,5 +60,15 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public List<ReportDto> getAllReports() {
         return reportRepository.findAll().stream().map(ReportDto::new).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ReportDto> getReportsForTechnician(int technicianId) {
+        return reportRepository.findAllByTechnicianId(technicianId).stream().map(ReportDto::new).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ReportDto> getReportsForPatient(int patientId) {
+        return reportRepository.findAllByPatientId(patientId).stream().map(ReportDto::new).collect(Collectors.toList());
     }
 }

@@ -68,4 +68,14 @@ public class AppointmentController {
             return ResponseEntity.ok(new CommonResponse<>(false, e.getMessage()));
         }
     }
+
+    @GetMapping(value = "doctor/{doctorId}")
+    public  ResponseEntity getAllAppointmentsByDoctor(@PathVariable(value = "doctorId") int doctorId) {
+        try {
+            List<AppointmentDto> appointmentList = appointmentService.getAllAppointmentsByDoctor(doctorId);
+            return ResponseEntity.ok(new CommonResponse<>(true, "All Appointments By Doctor", appointmentList));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new CommonResponse<>(false, e.getMessage()));
+        }
+    }
 }

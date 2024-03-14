@@ -18,11 +18,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AvailableTimeServiceImpl implements AvailableTimeService {
 
-    private final IdGeneratorService idGeneratorService;
+
     private final AvailableTimeRepository availableTimeRepository;
     @Override
     public AvailableTimeDto addAvailableTime(AvailableTimeDto availableTimeDto) {
-        AvailableTime newAvailableTime = new AvailableTime(availableTimeDto, idGeneratorService);
+        AvailableTime newAvailableTime = new AvailableTime(availableTimeDto, IdGeneratorService.getInstance());
         availableTimeRepository.save(newAvailableTime);
         return new AvailableTimeDto(newAvailableTime);
     }

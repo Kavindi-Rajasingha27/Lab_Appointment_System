@@ -12,5 +12,6 @@ public interface AppointmentService {
     void deleteAppointment(int appointmentId);
     AppointmentDto getAppointmentById(int appointmentId);
     List<AppointmentDto> getAllAppointments();
+    List<AppointmentDto> getAllAppointmentsByDoctor(int doctorId);
 
 }

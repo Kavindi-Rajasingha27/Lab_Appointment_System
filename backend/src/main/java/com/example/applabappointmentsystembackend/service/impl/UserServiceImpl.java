@@ -22,14 +22,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final IdGeneratorService idGeneratorService;
+
 
     private final UserRepository userRepository;
 
     @Override
     public UserDto addUser(UserDto userDto) {
         if (isEmailUnique(userDto.getEmail())) {
-            User newUser = new User(userDto, idGeneratorService);
+            User newUser = new User(userDto, IdGeneratorService.getInstance());
             userRepository.save(newUser);
             return new UserDto(newUser);
         } else {

@@ -8,10 +8,7 @@ import java.util.List;
 @Service
 public interface AvailableTimeService {
     AvailableTimeDto addAvailableTime(AvailableTimeDto availableTimeDto);
-
     AvailableTimeDto updateAvailableTime(AvailableTimeDto updatedAvailableTimeDto);
-
     void deleteAvailableTime(int availableTimeId);
-
     List<AvailableTimeDto> getAllAvailableTimesByDoctor(int doctorId);
 }
