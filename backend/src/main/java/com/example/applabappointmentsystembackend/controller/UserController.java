@@ -1,5 +1,6 @@
 package com.example.applabappointmentsystembackend.controller;
 
+import com.example.applabappointmentsystembackend.config.JwtUtil;
 import com.example.applabappointmentsystembackend.dto.CommonResponse;
 import com.example.applabappointmentsystembackend.dto.LoginDTO;
 import com.example.applabappointmentsystembackend.dto.UserDto;
@@ -16,7 +17,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -98,7 +101,14 @@ public class UserController {
         try {
             Optional loginResponse = userService.loginEmployee(loginDTO);
             if (loginResponse.isPresent()) {
-                return ResponseEntity.ok(new CommonResponse<>(true, loginResponse));
+                String username = loginDTO.getEmail();
+                String token = JwtUtil.generateToken(username);
+
+                Map<String, Object> body = new HashMap<>();
+                body.put("token", token);
+                body.put("user", loginResponse.orElse(null));
+
+                return ResponseEntity.ok(new CommonResponse<>(true, "Login Success", body));
             }
             return ResponseEntity.ok(new CommonResponse<>(false, "Email or password incorrect"));
         } catch (Exception e) {
