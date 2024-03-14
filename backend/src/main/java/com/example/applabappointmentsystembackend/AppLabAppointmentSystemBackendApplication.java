@@ -10,5 +10,4 @@ public class AppLabAppointmentSystemBackendApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(AppLabAppointmentSystemBackendApplication.class, args);
 	}
-
 }

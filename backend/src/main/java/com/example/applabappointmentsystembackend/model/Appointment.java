@@ -21,27 +21,15 @@ public class Appointment {
     @Field(name = "_id")
     private int id;
     private String patientId;
-    private String testId;
+    private String doctorId;
     private Date dateTime;
-    private String appointmentNumber;
-    private Double payAmount;
     private String payStatus;
-
-    public Appointment(String patientId, String testId, Date dateTime, String appointmentNumber, IdGeneratorService idGeneratorService) {
-        this.id = idGeneratorService.generateNextId("appointments");
-        this.patientId = patientId;
-        this.testId = testId;
-        this.dateTime = dateTime;
-        this.appointmentNumber = appointmentNumber;
-    }
 
     public Appointment(AppointmentDto appointmentDto, IdGeneratorService idGeneratorService){
         this.id = idGeneratorService.generateNextId("appointments");
         this.patientId = appointmentDto.getPatientId();
-        this.testId = appointmentDto.getTestId();
+        this.doctorId = appointmentDto.getDoctorId();
         this.dateTime = appointmentDto.getDateTime();
-        this.payAmount = appointmentDto.getPayAmount();
         this.payStatus = appointmentDto.getPayStatus();
-        this.appointmentNumber = appointmentDto.getAppointmentNumber();
     }
 }

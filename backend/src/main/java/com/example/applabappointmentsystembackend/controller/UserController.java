@@ -96,6 +96,18 @@ public class UserController {
             return ResponseEntity.ok(new CommonResponse<>(false, e.getMessage()));
         }
     }
+
+    @GetMapping(value = "/role/{role}")
+    public ResponseEntity getUserByRole(@PathVariable(value = "role") String role) {
+        try {
+            String uppercaseRole = role.toUpperCase();
+            List<UserDto> userDtoList = userService.getUserByRole(uppercaseRole);
+            return ResponseEntity.ok(new CommonResponse<>(true,"All users", userDtoList));
+        } catch (Exception e) {
+            return ResponseEntity.ok(new CommonResponse<>(false, e.getMessage()));
+        }
+    }
+
     @PostMapping("/login")
     public ResponseEntity authenticateUser(@RequestBody LoginDTO loginDTO) {
         try {

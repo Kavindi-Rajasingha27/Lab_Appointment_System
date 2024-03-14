@@ -12,6 +12,7 @@ import java.util.Optional;
 public interface UserService {
     UserDto addUser(UserDto userDto);
     boolean isEmailUnique(String email);
+    boolean isEmailUniqueForUpdate(String email, int id);
     UserDto updateUser(UserDto updatedUser);
     void deleteUser(int userId);
     UserDto getUserById(int userId);
@@ -19,4 +20,5 @@ public interface UserService {
     List<UserDto> getAllUsers();
 
     Optional<User> loginEmployee(LoginDTO loginDTO);
+    List<UserDto> getUserByRole(String role);
 }

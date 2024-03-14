@@ -7,6 +7,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Map;
+
 @Getter
 @Setter
 @ToString
@@ -17,29 +19,61 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Report {
     @Id
     private int id;
-    private int testId;
-    private String content;
+    private String testType;
+    private Map<String, Object> paramArray;
+    private String description;
+    private String paymentStatus;
+    private int doctorId;
+    private int patientId;
+    private int technitianId;
+    private int appointmentId;
 
-    public Report(int id, int testId, String content, IdGeneratorService idGeneratorService) {
+    public Report(int id, String testType, Map<String, Object> paramArray, String description, String paymentStatus,
+                  int doctorId, int patientId, int technitianId, int appointmentId, IdGeneratorService idGeneratorService) {
         this.id = idGeneratorService.generateNextId("reports");
-        this.testId = testId;
-        this.content = content;
+        this.testType = testType;
+        this.paramArray = paramArray;
+        this.description = description;
+        this.paymentStatus = paymentStatus;
+        this.doctorId = doctorId;
+        this.patientId = patientId;
+        this.technitianId = technitianId;
+        this.appointmentId = appointmentId;
     }
 
-    public Report(int testId, String content, IdGeneratorService idGeneratorService) {
+    public Report(String testType, Map<String, Object> paramArray, String description, String paymentStatus,
+                  int doctorId, int patientId, int technitianId, int appointmentId, IdGeneratorService idGeneratorService) {
         this.id = idGeneratorService.generateNextId("reports");
-        this.testId = testId;
-        this.content = content;
+        this.testType = testType;
+        this.paramArray = paramArray;
+        this.description = description;
+        this.paymentStatus = paymentStatus;
+        this.doctorId = doctorId;
+        this.patientId = patientId;
+        this.technitianId = technitianId;
+        this.appointmentId = appointmentId;
     }
 
     public Report(ReportDto reportDto, IdGeneratorService idGeneratorService) {
         this.id = idGeneratorService.generateNextId("reports");
-        this.testId = reportDto.getTestId();
-        this.content = reportDto.getContent();
+        this.testType = reportDto.getTestType();
+        this.paramArray = reportDto.getParamArray();
+        this.description = reportDto.getDescription();
+        this.paymentStatus = reportDto.getPaymentStatus();
+        this.doctorId = reportDto.getDoctorId();
+        this.patientId = reportDto.getPatientId();
+        this.technitianId = reportDto.getTechnitianId();
+        this.appointmentId = reportDto.getAppointmentId();
     }
 
     public Report(ReportDto reportDto) {
-        this.testId = reportDto.getTestId();
-        this.content = reportDto.getContent();
+        this.testType = reportDto.getTestType();
+        this.paramArray = reportDto.getParamArray();
+        this.description = reportDto.getDescription();
+        this.paymentStatus = reportDto.getPaymentStatus();
+        this.doctorId = reportDto.getDoctorId();
+        this.patientId = reportDto.getPatientId();
+        this.technitianId = reportDto.getTechnitianId();
+        this.appointmentId = reportDto.getAppointmentId();
     }
 }

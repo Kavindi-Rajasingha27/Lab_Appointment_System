@@ -33,8 +33,14 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public ReportDto updateReport(ReportDto updatedReportDto) {
         Report updatedReport = reportRepository.findById(updatedReportDto.getId()).map(existingReport -> {
-            existingReport.setTestId(updatedReportDto.getTestId());
-            existingReport.setContent(updatedReportDto.getContent());
+            existingReport.setTestType(updatedReportDto.getTestType());
+            existingReport.setParamArray(updatedReportDto.getParamArray());
+            existingReport.setDescription(updatedReportDto.getDescription());
+            existingReport.setDoctorId(updatedReportDto.getDoctorId());
+            existingReport.setPatientId(updatedReportDto.getPatientId());
+            existingReport.setAppointmentId(updatedReportDto.getAppointmentId());
+            existingReport.setTechnitianId(updatedReportDto.getTechnitianId());
+            existingReport.setPaymentStatus(updatedReportDto.getPaymentStatus());
 
             return reportRepository.save(existingReport);
         }).orElse(null);
