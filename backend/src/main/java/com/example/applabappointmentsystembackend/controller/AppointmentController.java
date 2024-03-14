@@ -20,7 +20,7 @@ public class AppointmentController {
     public ResponseEntity saveAppointment(@RequestBody AppointmentDto appointmentDto) {
         try{
            AppointmentDto savedAppointment = appointmentService.addAppointment(appointmentDto);
-            return ResponseEntity.ok(new CommonResponse<>(true, "User added successfully!", savedAppointment));
+            return ResponseEntity.ok(new CommonResponse<>(true, "Appointment added successfully!", savedAppointment));
         } catch (Exception e){
             e.printStackTrace();
             return ResponseEntity.ok(new CommonResponse<>(false, e.getMessage()));

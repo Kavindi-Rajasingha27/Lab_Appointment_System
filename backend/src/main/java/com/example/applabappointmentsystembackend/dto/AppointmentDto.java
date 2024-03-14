@@ -15,19 +15,15 @@ import java.util.Date;
 public class AppointmentDto {
     private int id;
     private String patientId;
-    private String testId;
+    private String doctorId;
     private Date dateTime;
-    private String appointmentNumber;
-    private Double payAmount;
     private String payStatus;
 
     public AppointmentDto(Appointment newAppointment) {
         this.id = newAppointment.getId();
         this.patientId = newAppointment.getPatientId();
-        this.testId = newAppointment.getTestId();
+        this.doctorId = newAppointment.getDoctorId();
         this.dateTime = newAppointment.getDateTime();
-        this.appointmentNumber = newAppointment.getAppointmentNumber();
-        this.payAmount = newAppointment.getPayAmount();
         this.payStatus = newAppointment.getPayStatus();
     }
 

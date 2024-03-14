@@ -39,23 +39,25 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUser(UserDto updatedUserDto) {
+        User existingUser = userRepository.findById(updatedUserDto.getId()).orElse(null);
 
-        if (isEmailUnique(updatedUserDto.getEmail())) {
-            User updatedUser = userRepository.findById(updatedUserDto.getId())
-                    .map(existingUser -> {
-                        existingUser.setFirstName(updatedUserDto.getFirstName());
-                        existingUser.setLastName(updatedUserDto.getLastName());
-                        existingUser.setAge(updatedUserDto.getAge());
-                        existingUser.setEmail(updatedUserDto.getEmail());
-                        existingUser.setMobile(updatedUserDto.getMobile());
-                        existingUser.setAddress(updatedUserDto.getAddress());
+        if (existingUser != null) {
+            if (!existingUser.getEmail().equals(updatedUserDto.getEmail()) && !isEmailUniqueForUpdate(updatedUserDto.getEmail(), existingUser.getId())) {
+                throw new IllegalArgumentException("Email is not unique");
+            }
 
-                        return userRepository.save(existingUser);
-                    })
-                    .orElse(null);
+            existingUser.setFirstName(updatedUserDto.getFirstName());
+            existingUser.setLastName(updatedUserDto.getLastName());
+            existingUser.setAge(updatedUserDto.getAge());
+            existingUser.setGender(updatedUserDto.getGender());
+            existingUser.setEmail(updatedUserDto.getEmail());
+            existingUser.setMobile(updatedUserDto.getMobile());
+            existingUser.setAddress(updatedUserDto.getAddress());
+
+            User updatedUser = userRepository.save(existingUser);
             return new UserDto(updatedUser);
         } else {
-            throw new IllegalArgumentException("Email is not unique");
+            throw new IllegalArgumentException("User not found");
         }
     }
 
@@ -111,9 +113,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<UserDto> getUserByRole(String role) {
+        return userRepository.findAllByRole(role).stream().map(UserDto::new).collect(Collectors.toList());
+    }
+
+    @Override
     public boolean isEmailUnique(String email) {
         User existingUser = userRepository.findByEmail(email);
         return existingUser == null;
+    }
+
+    @Override
+    public boolean isEmailUniqueForUpdate(String email, int userId) {
+        User existingUser = userRepository.findByEmail(email);
+        return existingUser == null || existingUser.getId() == userId;
     }
 
 }

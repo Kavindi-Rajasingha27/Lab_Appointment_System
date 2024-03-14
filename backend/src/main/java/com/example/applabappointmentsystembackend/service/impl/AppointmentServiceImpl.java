@@ -32,11 +32,9 @@ public class AppointmentServiceImpl implements AppointmentService {
     public AppointmentDto updateAppointment(AppointmentDto appointmentDto){
         Appointment updatedAppointment = appointmentRepository.findById(appointmentDto.getId())
                 .map(existingAppointment ->{
-                    existingAppointment.setAppointmentNumber(appointmentDto.getAppointmentNumber());
                     existingAppointment.setDateTime(appointmentDto.getDateTime());
-                    existingAppointment.setTestId(appointmentDto.getTestId());
+                    existingAppointment.setDoctorId(appointmentDto.getDoctorId());
                     existingAppointment.setPatientId(appointmentDto.getPatientId());
-                    existingAppointment.setPayAmount(appointmentDto.getPayAmount());
                     existingAppointment.setPayStatus(appointmentDto.getPayStatus());
 
                     return appointmentRepository.save(existingAppointment);
