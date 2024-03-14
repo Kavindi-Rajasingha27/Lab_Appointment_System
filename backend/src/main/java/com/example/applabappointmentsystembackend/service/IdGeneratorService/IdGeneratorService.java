@@ -1,16 +1,27 @@
 package com.example.applabappointmentsystembackend.service.IdGeneratorService;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class IdGeneratorService {
 
-    private final IdSequenceService idSequenceService;
+    private static IdSequenceService idSequenceService = null;
 
-    @Autowired
-    public IdGeneratorService(IdSequenceService idSequenceService) {
+    private static IdGeneratorService instance;
+
+    private IdGeneratorService(IdSequenceService idSequenceService) {
         this.idSequenceService = idSequenceService;
+    }
+
+    public static IdGeneratorService getInstance() {
+        if (instance == null) {
+            synchronized (IdGeneratorService.class) {
+                if (instance == null) {
+                    instance = new IdGeneratorService(idSequenceService);
+                }
+            }
+        }
+        return instance;
     }
 
     public int generateNextId(String collectionName) {

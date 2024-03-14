@@ -20,18 +20,18 @@ public class ReportDto {
     private String paymentStatus;
     private int doctorId;
     private int patientId;
-    private int technitianId;
+    private int technicianId;
     private int appointmentId;
 
     public ReportDto(String testType, Map<String, Object> paramArray, String description, String paymentStatus,
-                     int doctorId, int patientId, int technitianId, int appointmentId) {
+                     int doctorId, int patientId, int technicianId, int appointmentId) {
         this.testType = testType;
         this.paramArray = paramArray;
         this.description = description;
         this.paymentStatus = paymentStatus;
         this.doctorId = doctorId;
         this.patientId = patientId;
-        this.technitianId = technitianId;
+        this.technicianId = technicianId;
         this.appointmentId = appointmentId;
     }
 
@@ -43,7 +43,7 @@ public class ReportDto {
         this.paymentStatus = report.getPaymentStatus();
         this.doctorId = report.getDoctorId();
         this.patientId = report.getPatientId();
-        this.technitianId = report.getTechnitianId();
+        this.technicianId = report.getTechnicianId();
         this.appointmentId = report.getAppointmentId();
     }
 }

@@ -15,14 +15,13 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class TestTypeServiceImpl implements TestTypeService {
-    private final IdGeneratorService idGeneratorService;
     private final TestTypeRepository testTypeRepository;
 
     @Override
     public TestTypeDto addTestType(TestTypeDto testTypeDto){
         TestType newTestType = new TestType(
                 testTypeDto,
-                idGeneratorService
+                IdGeneratorService.getInstance()
         );
         testTypeRepository.save(newTestType);
         return new TestTypeDto(newTestType);

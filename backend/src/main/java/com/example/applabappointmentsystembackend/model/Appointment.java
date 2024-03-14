@@ -20,8 +20,8 @@ public class Appointment {
     @Id
     @Field(name = "_id")
     private int id;
-    private String patientId;
-    private String doctorId;
+    private int patientId;
+    private int doctorId;
     private Date dateTime;
     private String payStatus;
 
