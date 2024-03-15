@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState } from "react";
 import { AiOutlineCloseCircle } from "react-icons/ai";
-import { GiTimeBomb } from "react-icons/gi";
+import { GiCalendar, GiAlarmClock} from "react-icons/gi";
 import { MdSendTimeExtension } from "react-icons/md";
 import Modal from "react-modal";
 import DoctorList from "../../components/DoctorList/DoctorList";
-import ContactForm from "../../components/ContactForm/ContactForm";
+import dayjs from 'dayjs';
 import { ProviderContext } from "../../components/Provider/Provider";
 import {
   getUsersByRole,
@@ -18,11 +18,18 @@ export default function Doctor() {
   const [availableTimeSlot, setAvailableTimeSlot] = useState(null);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [showAvailableTimeTab, setShowAvailableTimeTab] = useState(false);
+  const { axiosJWT, doctorsLst, setDoctorsLst } = useContext(ProviderContext);
+  const userId = sessionStorage.getItem("userId");
 
   const openModal = (doctor) => {
     setSelectedDoctor(doctor);
     setIsModalOpen(true);
-    getAvailableTimeSlots(axiosJWT, doctor.id, setAvailableTimeSlot);
+    console.log("selectedDoctor", doctor.id);
+
+    getAvailableTimeSlots(axiosJWT, doctor.id, (times) => {
+      setAvailableTimeSlot(times.body);
+      console.log("times", times.body);
+    });
   };
 
   const closeModal = () => {
@@ -31,19 +38,12 @@ export default function Doctor() {
     setAvailableTimeSlot(null);
   };
 
-  const { axiosJWT, doctorsLst, setDoctorsLst } =
-    useContext(ProviderContext);
-
   const [doctorsLstIsEmpty, setDoctorsLstIsEmpty] = useState("");
 
   // console.log(doctorsLst);
 
   useEffect(() => {
-    getUsersByRole(
-      axiosJWT,
-      "doctor",
-      setDoctorsLst,
-    );
+    getUsersByRole(axiosJWT, "doctor", setDoctorsLst);
   }, [axiosJWT, setDoctorsLst]);
 
   useEffect(() => {
@@ -65,100 +65,6 @@ export default function Doctor() {
         Doctors
       </h1>
       <hr className="mt-0 mb-4" />
-      {/* <div className="d-flex">
-        <div className="d-flex">
-          <div>
-            <h5
-              style={{ marginTop: "7px", marginRight: "9px", color: "black" }}
-            >
-              Job Type:
-            </h5>
-          </div>
-          <div>
-            <select
-              className="dropdown"
-              style={{
-                padding: "8px 12px",
-                color: "#198754",
-                fontWeight: "600",
-                backgroundColor: "white",
-                border: "1px solid #198754",
-                cursor: "pointer",
-                borderRadius: "7px",
-              }}
-              onChange={(e) => setJobTypeParam(e.target.value)}
-            >
-              <option value="" selected>
-                All
-              </option>
-              <option value="Information Technology (IT)">
-                Information Technology (IT)
-              </option>
-              <option value="Healthcare">Healthcare</option>
-              <option value="Business and Finance">Business and Finance</option>
-              <option value="Education">Education</option>
-              <option value="Engineering">Engineering</option>
-              <option value="Arts and Media">Arts and Media</option>
-              <option value="Retail and Sales">Retail and Sales</option>
-              <option value="Manufacturing">Manufacturing</option>
-              <option value="Legal">Legal</option>
-              <option value="Construction and Trades">
-                Construction and Trades
-              </option>
-              <option value="Hospitality and Tourism">
-                Hospitality and Tourism
-              </option>
-              <option value="Science and Research">Science and Research</option>
-            </select>
-          </div>
-        </div>
-        &nbsp; &nbsp; &nbsp;
-        <div className="d-flex">
-          <div>
-            <h5
-              style={{ marginTop: "7px", marginRight: "9px", color: "black" }}
-            >
-              Country:
-            </h5>
-          </div>
-          <div>
-            <select
-              className="dropdown"
-              style={{
-                padding: "8px 12px",
-                color: "#198754",
-                fontWeight: "600",
-                backgroundColor: "white",
-                border: "1px solid #198754",
-                cursor: "pointer",
-                borderRadius: "7px",
-              }}
-              onChange={(e) => setCountryParam(e.target.value)}
-            >
-              <option value="" selected>
-                All
-              </option>
-              <option value="Sri Lanka">Sri Lanka</option>
-              <option value="United States">United States</option>
-              <option value="United Kingdom">United Kingdom</option>
-              <option value="Canada">Canada</option>
-              <option value="Australia">Australia</option>
-              <option value="India">India</option>
-              <option value="China">China</option>
-              <option value="Japan">Japan</option>
-              <option value="Brazil">Brazil</option>
-              <option value="Germany">Germany</option>
-              <option value="Russia">Russia</option>
-              <option value="France">France</option>
-              <option value="Sweden">Sweden</option>
-              <option value="Italy">Italy</option>
-              <option value="Argentina">Argentina</option>
-              <option value="Spain">Spain</option>
-              <option value="Saudi Arabia">Saudi Arabia</option>
-            </select>
-          </div>
-        </div>
-      </div> */}
       <br />
       {!doctorsLstIsEmpty ? (
         <DoctorList
@@ -191,8 +97,9 @@ export default function Doctor() {
           style={{
             content: {
               width: "800px",
-              height: "700px",
+              height: "auto",
               margin: "auto",
+              overflowY: "auto",
               overflow: `${showAvailableTimeTab ? "auto" : "hidden"}`,
             },
           }}
@@ -270,7 +177,11 @@ export default function Doctor() {
                                 className="form-control"
                                 id="inputFirstName"
                                 type="text"
-                                value={selectedDoctor.name}
+                                value={
+                                  selectedDoctor.firstName +
+                                  " " +
+                                  selectedDoctor.lastName
+                                }
                                 disabled
                               />
                             </div>
@@ -308,12 +219,12 @@ export default function Doctor() {
                           <div className="row gx-3 mb-3">
                             <div className="col-md-6">
                               <label className="small mb-1" for="mobile">
-                                Job Type
+                                Gender
                               </label>
                               <input
                                 className="form-control"
                                 id="mobile"
-                                value={selectedDoctor.job_type}
+                                value={selectedDoctor.gender}
                                 disabled
                               />
                             </div>
@@ -323,15 +234,14 @@ export default function Doctor() {
                               className="small mb-1"
                               for="exampleFormControlTextarea1"
                             >
-                              Description
+                              Job position
                             </label>
-                            <textarea
+                            <input
                               className="form-control"
-                              id="exampleFormControlTextarea1"
-                              rows="3"
-                              value={selectedDoctor.description}
+                              id="mobile"
+                              value={selectedDoctor.role}
                               disabled
-                            ></textarea>
+                            />
                           </div>
                         </form>
                       </div>
@@ -342,7 +252,7 @@ export default function Doctor() {
               </>
             </div>
           </div>
-          {/* <div
+          <div
             className="tab-pane fade"
             id="pills-profile"
             role="tabpanel"
@@ -365,16 +275,35 @@ export default function Doctor() {
                     for="flexRadioDefault1"
                     style={{ marginTop: 8, marginLeft: 5 }}
                   >
-                    <GiTimeBomb style={{ marginRight: 5, color: "#198754" }} />
-                    {time.dateTime}
-                  </label>
+                    <div className="form-check d-flex justify-content-between" style={{ backgroundColor: "#EEFFEE", padding: 5, borderRadius: 5, marginBottom: 3 }}>
+                      <div className="form-check-label" style={{ display: 'flex', alignItems: 'center' }}>
+                          <GiCalendar style={{ marginRight: 5, color: "#198754" }} />
+                          <span style={{ marginRight: '80px' }}>Start Date: {dayjs(time.startTime).format('M-D-YYYY')}</span>
+                      </div>
+                      <div>
+                      <GiAlarmClock style={{ marginRight: 5, color: "#198754" }} />
+                          <span style={{ marginLeft: '' }}></span><span>Start Time: {dayjs(time.startTime).format('h:mm A')}</span>
+                      </div>
+                    </div>
+                      <div className="form-check d-flex justify-content-between" style={{ backgroundColor: "#EEFFEE", padding: 5, borderRadius: 5, marginBottom: 3 }}>
+                        <div className="form-check-label" style={{ display: 'flex', alignItems: 'center' }}>
+                            <GiCalendar style={{ marginRight: 5, color: "#198754" }} />
+                            <span style={{ marginRight: '80px' }}>End Date: {dayjs(time.endTime).format('M-D-YYYY')}</span>
+                        </div>
+                        <div>
+                        <GiAlarmClock style={{ marginRight: 5, color: "#198754" }} />
+                            <span style={{ marginRight: '8px' }}></span><span>End Time: {dayjs(time.endTime).format('h:mm A')}</span>
+                        </div>
+                      </div>
+                    </label>
                   <button
                     type="button"
                     onClick={() =>
                       submitAppointment(
                         axiosJWT,
-                        time.id,
-                        selectedDoctor.name,
+                        userId,
+                        time.startTime,
+                        selectedDoctor.id,                       
                         closeModal
                       )
                     }
@@ -402,12 +331,7 @@ export default function Doctor() {
                 There are no available times.
               </div>
             )}
-            <div style={{ marginTop: 30, marginBottom: 50 }}>
-              <h6>If You want send a email to the doctor</h6>
-              <ContactForm doctor={selectedDoctor} />
-            </div>
-          </div> */}
-
+          </div>
           <button
             type="button"
             onClick={closeModal}

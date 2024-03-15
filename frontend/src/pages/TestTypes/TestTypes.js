@@ -18,18 +18,40 @@ function TestTypes() {
 
   const [allTestTypes, setAllTestTypes] = useState([]);
 
+  const fetchTestTypes = async () => {
+    setLoading(true);
+    try {
+      const response = await getAllTestTypes(axiosJWT);
+      setAllTestTypes(response);
+    } catch (error) {
+      console.error("Error fetching test types:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    getAllTestTypes(axiosJWT)
-      .then((response) => {
-        setAllTestTypes(response);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching test types:", error);
-        setLoading(false);
-      });
+    fetchTestTypes();
   }, [axiosJWT]);
 
+  const handleAddTestType = async () => {
+    try {
+      await addTestType(axiosJWT, testType);
+      await fetchTestTypes();
+    } catch (error) {
+      console.error("Error adding test type:", error);
+    }
+  };
+
+  const handleDeleteTestType = async (id) => {
+    try {
+      await deleteTestType(axiosJWT, id);
+      await fetchTestTypes();
+    } catch (error) {
+      console.error("Error deleting test type:", error);
+    }
+  };
+  
   return (
     <div style={{ marginRight: 42, marginTop: 0 }}>
       <h1
@@ -141,7 +163,7 @@ function TestTypes() {
                 <button
                   class="btn btn-success mt-5"
                   type="button"
-                  onClick={() => addTestType(axiosJWT, testType)}
+                  onClick={() => handleAddTestType()}
                 >
                   Submit TestType
                 </button>
@@ -164,7 +186,7 @@ function TestTypes() {
                       <button
                         class="btn btn-danger"
                         type="button"
-                        onClick={() => deleteTestType(axiosJWT, testType.id)}
+                        onClick={() => handleDeleteTestType(testType.id)}
                       >
                         delete
                       </button>

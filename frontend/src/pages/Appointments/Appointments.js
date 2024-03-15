@@ -9,13 +9,15 @@ const Appointments = () => {
   const { axiosJWT, appointmentsLst, setAppointmentsLst } =
     useContext(ProviderContext);
 
+    console.log(appointmentsLst);
+
   const [userType] = useState(sessionStorage.getItem("userType"));
 
   useEffect(() => {
     getAppointments(axiosJWT, setAppointmentsLst);
   }, []);
 
-  if (userType === "job-seeker") {
+  if (userType === "PATIENT") {
     return (
       <JsAppointmentTable
         appointmentsLst={appointmentsLst}
@@ -23,7 +25,7 @@ const Appointments = () => {
       />
     );
   }
-  if (userType === "consultant") {
+  if (userType === "") {
     return (
       <ConsultantAppointmentTable
         appointmentsLst={appointmentsLst}

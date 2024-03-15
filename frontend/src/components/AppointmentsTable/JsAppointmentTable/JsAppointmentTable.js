@@ -2,6 +2,7 @@ import { AiFillDelete } from "react-icons/ai";
 import { deleteAppointment } from "../../../utils/EndpointUtils";
 
 const JsAppointmentTable = ({ appointmentsLst, axiosJWT }) => {
+  console.log(appointmentsLst);
   return (
     <>
       <div style={{ marginRight: "50px" }}>
@@ -20,8 +21,8 @@ const JsAppointmentTable = ({ appointmentsLst, axiosJWT }) => {
           <thead>
             <tr>
               <th scope="col">Appointment No</th>
-              <th scope="col">Consultant</th>
-              <th scope="col">Job Type</th>
+              <th scope="col"></th>
+              <th scope="col"></th>
               <th scope="col">Date & Time</th>
               <th scope="col" style={{ textAlign: "center" }}>
                 Status
@@ -35,8 +36,8 @@ const JsAppointmentTable = ({ appointmentsLst, axiosJWT }) => {
             {appointmentsLst.map((item) => (
               <tr key={item.id}>
                 <th scope="row">{item.id}</th>
-                <td>{item.consultantName}</td>
-                <td>{item.jobType}</td>
+                <td>{}</td>
+                <td>{}</td>
                 <td>{item.dateTime}</td>
                 <td style={{ textAlign: "center" }}>
                   <div

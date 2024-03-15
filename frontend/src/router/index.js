@@ -4,7 +4,6 @@ import Appointments from "../pages/Appointments/Appointments";
 import UserProfile from "../pages/UserProfile/UserProfile";
 import Doctors from "../pages/Doctors/Doctor";
 import Home from "../pages/Home/Home";
-import JobSeekerList from "../pages/JobSeekerList/JobSeekerList";
 import Login from "../pages/Login/Login";
 import Register from "../pages/Register/Register";
 import PrivateRouteInverse from "../utils/PrivateRouteInverse";
@@ -48,14 +47,6 @@ function Router() {
           element: (
             <SideMenuLayout>
               <UserProfile />
-            </SideMenuLayout>
-          ),
-        },
-        {
-          path: "/JobSeekerList",
-          element: (
-            <SideMenuLayout>
-              <JobSeekerList />
             </SideMenuLayout>
           ),
         },

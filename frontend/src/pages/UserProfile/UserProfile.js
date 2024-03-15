@@ -53,38 +53,7 @@ function UserProfile() {
       </h1>
       <hr class="mt-0 mb-4" />
       <div class="row">
-        <div class="col-xl-4">
-          <div class="card mb-4 mb-xl-0">
-            <div class="card-header">Profile Picture</div>
-            <div class="card-body text-center">
-              <Avatar
-                alt={user.firstName}
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTsu0b1R79ZeinW7a0NNTC_unCuc1-VR4_fW4qOVBQWcDoRgw4pmZnTzysiyB0zGh9Ufo&usqp=CAU"
-                style={{ width: "150px", height: "150px", margin: "auto" }}
-              />
-              <h4 style={{ marginTop: 15 }}>{user.firstName} {user.lastName}</h4>
-              {/* <img
-                class="img-account-profile rounded-circle mb-2"
-                src="http://bootdey.com/img/Content/avatar/avatar1.png"
-                alt=""
-              /> */}
-
-              {/* <div class="small font-italic text-muted mb-4">
-                JPG or PNG no larger than 5 MB
-              </div>
-              <label class="form-label" for="customFile">
-                Upload your image
-              </label>
-              <input
-                type="file"
-                class="form-control"
-                id="customFile"
-                accept="image/png, image/jpeg"
-              /> */}
-            </div>
-          </div>
-        </div>
-        <div class="col-xl-8">
+        <div class="col-xl-12">
           <div class="card mb-4">
             <div class="card-header">Account Details</div>
             <div class="card-body">
@@ -107,8 +76,6 @@ function UserProfile() {
                       }
                     />
                   </div>
-                </div>
-                <div class="row gx-3 mb-3">
                   <div class="col-md-6">
                     <label class="small mb-1" for="inputFirstName">
                       Last Name<span className="text-danger"></span>
@@ -145,8 +112,6 @@ function UserProfile() {
                       }
                     />
                   </div>
-                </div>
-                <div class="row gx-3 mb-3">
                   <div class="col-md-6">
                     <label class="small mb-1" for="category">
                       Gender<span className="text-danger"></span>
@@ -189,8 +154,6 @@ function UserProfile() {
                     />
                     {errorEmail && <ErrorMessage errMessage={errorEmail} />}
                   </div>
-                </div>
-                <div class="row gx-3 mb-3">
                   <div class="col-md-6">
                     <label class="small mb-1" for="mobile">
                       Phone number<span className="text-danger"></span>
@@ -208,7 +171,7 @@ function UserProfile() {
                   </div>
                 </div>
                 <div class="row gx-3 mb-3">
-                  <div class="col-md-6">
+                  <div class="col-md-12">
                     <label class="small mb-1" for="inputAddress">
                       Address
                     </label>
