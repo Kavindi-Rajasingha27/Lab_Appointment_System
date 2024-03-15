@@ -66,7 +66,7 @@ function SideMenu({ mainBg }) {
           </span>
 
           <div className="text logo-text">
-            <span className="name">The Jobs</span>
+            <span className="name">LAB CARE</span>
           </div>
         </div>
 

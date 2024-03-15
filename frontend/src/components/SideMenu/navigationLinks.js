@@ -3,7 +3,12 @@ import { BsCalendarDateFill, BsFillClockFill } from "react-icons/bs";
 import { FaUserTie } from "react-icons/fa";
 import { AiFillCalendar } from "react-icons/ai";
 import { MdPeople } from "react-icons/md";
-import { RiAttachmentFill, RiFileList2Fill, RiProfileFill } from "react-icons/ri";
+import { RiFileList3Line, RiTestTubeFill } from "react-icons/ri";
+import {
+  RiAttachmentFill,
+  RiFileList2Fill,
+  RiProfileFill,
+} from "react-icons/ri";
 
 export const sideNavigationLinks = [
   {
@@ -99,6 +104,16 @@ export const sideNavigationPatientLinks = [
     icon: <RiProfileFill className="icon-css text-success" size={22} />,
     title: "Profile",
     to: "/UserProfile",
+  },
+  {
+    icon: <RiTestTubeFill className="icon-css text-success" size={22} />,
+    title: "Tests",
+    to: "/Tests",
+  },
+  {
+    icon: <RiFileList3Line className="icon-css text-success" size={22} />,
+    title: "Reports",
+    to: "/Reports",
   },
 ];
 
