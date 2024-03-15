@@ -12,6 +12,8 @@ import TestTypes from "../pages/TestTypes/TestTypes";
 import AvailableTimes from "../pages/AvailableTimes/AvailableTimes";
 import TechReports from "../pages/Technician/Reports/TechReports";
 import DoctorAppointments from "../pages/Doctors/Appointments/DoctorAppointments";
+import Tests from "../pages/Tests/Tests";
+import Reports from "../pages/Reports/Reports";
 
 function Router() {
   const routes = [
@@ -79,6 +81,22 @@ function Router() {
           element: (
             <SideMenuLayout>
               <DoctorAppointments />
+            </SideMenuLayout>
+          ),
+        },
+        {
+          path: "/Tests",
+          element: (
+            <SideMenuLayout>
+              <Tests />
+            </SideMenuLayout>
+          ),
+        },
+        {
+          path: "/Reports",
+          element: (
+            <SideMenuLayout>
+              <Reports />
             </SideMenuLayout>
           ),
         },
