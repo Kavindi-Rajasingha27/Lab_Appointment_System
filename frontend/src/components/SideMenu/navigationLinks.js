@@ -1,6 +1,7 @@
 import { AiFillHome } from "react-icons/ai";
 import { BsCalendarDateFill, BsFillClockFill } from "react-icons/bs";
 import { FaUserTie } from "react-icons/fa";
+import { AiFillCalendar } from "react-icons/ai";
 import { MdPeople } from "react-icons/md";
 import { RiAttachmentFill, RiFileList2Fill, RiProfileFill } from "react-icons/ri";
 
@@ -29,7 +30,7 @@ export const sideNavigationAdminLinks = [
     to: "/home",
   },
   {
-    icon: <BsCalendarDateFill className="icon-css text-success" size={20} />,
+    icon: <AiFillCalendar  className="icon-css text-success" size={20} />,
     title: "Appointments",
     to: "/appointment",
   },
@@ -67,7 +68,7 @@ export const sideNavigationDoctorLinks = [
     to: "/availabletimes",
   },
   {
-    icon: <BsFillClockFill className="icon-css text-success" size={20} />,
+    icon: <AiFillCalendar className="icon-css text-success" size={20} />,
     title: "Appointments",
     to: "/doctor/appointments",
   },

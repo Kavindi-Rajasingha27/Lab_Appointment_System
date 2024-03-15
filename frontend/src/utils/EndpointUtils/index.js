@@ -2,7 +2,6 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { format } from "date-fns";
 
-
 export const handleSignUp = async (
   e,
   userType,
@@ -127,7 +126,7 @@ export const logout = (setToken, setUser, navigate) => {
 
 export const getAppointments = async (axiosJWT, setAppointmentsLst) => {
   try {
-    const res = await axiosJWT.get("http://localhost:8080/appointments/all", {
+    const res = await axiosJWT.get("http://localhost:8080/appointment/all", {
       headers: {
         authorization: "Bearer " + sessionStorage.getItem("accessToken"),
       },
@@ -159,7 +158,7 @@ export const deleteAppointment = async (axiosJWT, id) => {
     });
 
     if (result.isConfirmed) {
-      await axiosJWT.delete(`http://localhost:8080/appointments/${id}`, {
+      await axiosJWT.delete(`http://localhost:8080/appointment/delete/${id}`, {
         headers: {
           authorization: "Bearer " + sessionStorage.getItem("accessToken"),
         },
@@ -311,20 +310,29 @@ export const updateProfileDetails = async (axiosJWT, id, user) => {
   }
 };
 
-export const addAvailableTime = async (axiosJWT, startTime, endTime, doctorId) => {
+export const addAvailableTime = async (
+  axiosJWT,
+  startTime,
+  endTime,
+  doctorId
+) => {
   console.log("Add Available Time Payload:", startTime, endTime, doctorId);
   try {
-
     const formattedStartTime = format(startTime, "yyyy-MM-dd'T'HH:mm:ss");
     const formattedEndTime = format(endTime, "yyyy-MM-dd'T'HH:mm:ss");
-    console.log("after Add Available Time Payload:", formattedStartTime, formattedEndTime, doctorId);
+    console.log(
+      "after Add Available Time Payload:",
+      formattedStartTime,
+      formattedEndTime,
+      doctorId
+    );
 
     await axiosJWT.post(
       `http://localhost:8080/available-time/add`,
       {
         startTime: formattedStartTime,
-        endTime: formattedEndTime, 
-        available: true,      
+        endTime: formattedEndTime,
+        available: true,
         doctorId: doctorId,
       },
       {
@@ -357,13 +365,12 @@ export const addAvailableTime = async (axiosJWT, startTime, endTime, doctorId) =
 
 export const addTestType = async (axiosJWT, testType) => {
   try {
-
     await axiosJWT.post(
       `http://localhost:8080/testType/add`,
       {
         type: testType.type,
-        price: testType.price, 
-        paramArray: testType.paramArray,      
+        price: testType.price,
+        paramArray: testType.paramArray,
       },
       {
         headers: {
@@ -395,7 +402,6 @@ export const addTestType = async (axiosJWT, testType) => {
 
 export const deleteTestType = async (axiosJWT, testTypeId) => {
   try {
-
     await axiosJWT.delete(
       `http://localhost:8080/testType/delete/${testTypeId}`,
       {
@@ -428,16 +434,12 @@ export const deleteTestType = async (axiosJWT, testTypeId) => {
 
 export const getAllTestTypes = async (axiosJWT) => {
   try {
-
-    const res = await axiosJWT.get(
-      `http://localhost:8080/testType/all`,
-      {
-        headers: {
-          authorization: "Bearer " + sessionStorage.getItem("accessToken"),
-        },
-      }
-    );
-    return res.data.body.reverse();;
+    const res = await axiosJWT.get(`http://localhost:8080/testType/all`, {
+      headers: {
+        authorization: "Bearer " + sessionStorage.getItem("accessToken"),
+      },
+    });
+    return res.data.body.reverse();
   } catch (err) {
     console.log(err);
     Swal.fire({
@@ -453,7 +455,6 @@ export const getAllTestTypes = async (axiosJWT) => {
 
 export const getReportsForTechnician = async (axiosJWT, technicianId) => {
   try {
-
     const res = await axiosJWT.get(
       `http://localhost:8080/report/technician/${technicianId}`,
       {
@@ -478,7 +479,6 @@ export const getReportsForTechnician = async (axiosJWT, technicianId) => {
 
 export const getAppointmentsForDoctor = async (axiosJWT, doctorId) => {
   try {
-
     const res = await axiosJWT.get(
       `http://localhost:8080/appointment/doctor/${doctorId}`,
       {
@@ -503,16 +503,15 @@ export const getAppointmentsForDoctor = async (axiosJWT, doctorId) => {
 
 export const createReport = async (axiosJWT, selectedReport) => {
   try {
-
     await axiosJWT.post(
       `http://localhost:8080/report/generate`,
       {
-        doctorId : selectedReport.doctorId,
-        patientId : selectedReport.patientId,
-        technicianId : selectedReport.technicianId,
-        appointmentId : selectedReport.appointmentId,
-        testType : selectedReport.testType,
-        paramArray: {}, 
+        doctorId: selectedReport.doctorId,
+        patientId: selectedReport.patientId,
+        technicianId: selectedReport.technicianId,
+        appointmentId: selectedReport.appointmentId,
+        testType: selectedReport.testType,
+        paramArray: {},
         description: "",
         paymentStatus: "PENDING",
       },
@@ -549,9 +548,9 @@ export const completeAppointment = async (axiosJWT, selectedAppointment) => {
     await axiosJWT.post(
       `http://localhost:8080/appointment/update`,
       {
-        id : selectedAppointment.id,
-        patientId : selectedAppointment.patientId,
-        doctorId : selectedAppointment.doctorId,
+        id: selectedAppointment.id,
+        patientId: selectedAppointment.patientId,
+        doctorId: selectedAppointment.doctorId,
         dateTime: selectedAppointment.dateTime,
         payStatus: "ASSIGNED",
       },
@@ -561,7 +560,7 @@ export const completeAppointment = async (axiosJWT, selectedAppointment) => {
         },
       }
     );
-
+    window.location.reload();
     Swal.fire({
       position: "center",
       icon: "success",
@@ -586,24 +585,23 @@ export const completeAppointment = async (axiosJWT, selectedAppointment) => {
 export const completeReport = async (axiosJWT, selectedReport) => {
   try {
     const paramObject = selectedReport.paramArray.reduce((obj, item) => {
-      const key = Object.keys(item)[0]; 
+      const key = Object.keys(item)[0];
       obj[key] = item[key];
       return obj;
-  }, {});
+    }, {});
 
     await axiosJWT.post(
       `http://localhost:8080/report/update`,
       {
         id: selectedReport.id,
-        doctorId : selectedReport.doctorId,
-        patientId : selectedReport.patientId,
-        technicianId : selectedReport.technicianId,
-        appointmentId : selectedReport.appointmentId,
-        testType : selectedReport.testType,
-        paramArray: paramObject, 
+        doctorId: selectedReport.doctorId,
+        patientId: selectedReport.patientId,
+        technicianId: selectedReport.technicianId,
+        appointmentId: selectedReport.appointmentId,
+        testType: selectedReport.testType,
+        paramArray: paramObject,
         description: selectedReport.description,
-        paymentStatus: "COMPLETE",      
-     
+        paymentStatus: "COMPLETE",
       },
       {
         headers: {
@@ -611,7 +609,7 @@ export const completeReport = async (axiosJWT, selectedReport) => {
         },
       }
     );
-
+    window.location.reload();
     Swal.fire({
       position: "center",
       icon: "success",
@@ -635,11 +633,14 @@ export const completeReport = async (axiosJWT, selectedReport) => {
 
 export const getUsersByRole = async (axiosJWT, userRole, setUsersLst) => {
   try {
-    const res = await axiosJWT.get(`http://localhost:8080/user/role/${userRole}`, {
-      headers: {
-        authorization: "Bearer " + sessionStorage.getItem("accessToken"),
-      },
-    });
+    const res = await axiosJWT.get(
+      `http://localhost:8080/user/role/${userRole}`,
+      {
+        headers: {
+          authorization: "Bearer " + sessionStorage.getItem("accessToken"),
+        },
+      }
+    );
     if (Array.isArray(res.data.body)) {
       setUsersLst(res.data.body.reverse());
     } else {
@@ -652,57 +653,6 @@ export const getUsersByRole = async (axiosJWT, userRole, setUsersLst) => {
       icon: "error",
       title: "Server Error",
       text: `Oops! Something went wrong while fetching ${userRole}.`,
-      showConfirmButton: false,
-      timer: 5000,
-    });
-  }
-};
-
-
-export const getAllUsers = async (
-  axiosJWT,
-  userRole,
-  setUsersLst,
-  jobTypeParam,
-  countryParam
-) => {
-  try {
-    let endP;
-
-    if (jobTypeParam === "" && countryParam === "") {
-      endP = `http://localhost:8080/${userRole}`;
-    } else {
-      const queryParams = [];
-
-      if (jobTypeParam !== "") {
-        queryParams.push(`job_type=${jobTypeParam}`);
-      }
-
-      if (countryParam !== "") {
-        queryParams.push(`country=${countryParam}`);
-      }
-
-      const queryString = queryParams.join("&");
-      endP = `http://localhost:8080/${userRole}${
-        queryString ? `?${queryString}` : ""
-      }`;
-    }
-    const res = await axiosJWT.get(endP, {
-      headers: {
-        authorization: "Bearer " + sessionStorage.getItem("accessToken"),
-      },
-    });
-    setUsersLst(res.data.reverse());
-  } catch (err) {
-    console.log(err);
-    Swal.fire({
-      position: "center",
-      icon: "error",
-      title: "Server Error",
-      text:
-        userRole === "consultants"
-          ? "Oops! Something went wrong while fetching consultants."
-          : "Oops! Something went wrong while fetching job seekers.",
       showConfirmButton: false,
       timer: 5000,
     });
@@ -733,7 +683,12 @@ export const getAvailableTimeSlots = async (axiosJWT, id, setAvailableTime) => {
   }
 };
 
-export const updateAvailableTimeSlots = async (axiosJWT, id, startTime, endTime) => {
+export const updateAvailableTimeSlots = async (
+  axiosJWT,
+  id,
+  startTime,
+  endTime
+) => {
   console.log("Update Available Time Payload:", id, startTime, endTime);
 
   try {
@@ -742,8 +697,8 @@ export const updateAvailableTimeSlots = async (axiosJWT, id, startTime, endTime)
       {
         id: id,
         startTime: startTime,
-        endTime: endTime, 
-        available: true,      
+        endTime: endTime,
+        available: true,
       },
       {
         headers: {
@@ -794,11 +749,14 @@ export const deleteAvailableTimeSlots = async (axiosJWT, id) => {
     });
 
     if (result.isConfirmed) {
-      await axiosJWT.delete(`http://localhost:8080/available-time/delete/${id}`, {
-        headers: {
-          authorization: "Bearer " + sessionStorage.getItem("accessToken"),
-        },
-      });
+      await axiosJWT.delete(
+        `http://localhost:8080/available-time/delete/${id}`,
+        {
+          headers: {
+            authorization: "Bearer " + sessionStorage.getItem("accessToken"),
+          },
+        }
+      );
       window.location.reload();
       Swal.fire({
         position: "center",
@@ -823,13 +781,14 @@ export const deleteAvailableTimeSlots = async (axiosJWT, id) => {
 export const submitAppointment = async (
   axiosJWT,
   id,
-  consultantName,
+  dateTime,
+  doctorId,
   closeModal
 ) => {
   try {
     const result = await Swal.fire({
       title: `Confirm Submission`,
-      text: `Are you sure you want to submit the appointment for ${consultantName}?`,
+      text: `Are you sure you want to submit the appointment.`,
       icon: "question",
       showCancelButton: true,
       confirmButtonColor: "#198754",
@@ -839,9 +798,12 @@ export const submitAppointment = async (
 
     if (result.isConfirmed) {
       await axiosJWT.post(
-        `http://localhost:8080/appointments/create`,
+        `http://localhost:8080/appointment/add`,
         {
-          available_time_id: id,
+          patientId: id,
+          dateTime: dateTime,
+          payStatus: "PENDING",
+          doctorId: doctorId,
         },
         {
           headers: {
