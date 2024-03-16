@@ -19,6 +19,9 @@ import "./Footer.css";
 import "./Home.css";
 
 export default function Home() {
+
+  const userRole = sessionStorage.getItem("userRole");
+
   return (
     <div>
       <section className="banner-slider__wrapper pt-0 pb-0 overflow-hidden">
@@ -62,19 +65,20 @@ export default function Home() {
                       </h1>
                     </div>
 
-                    {/* Button */}
-                    <div className="theme-btn__wrapper d-flex justify-content-center">
-                      <Link
-                        to="/appointment"
-                        className="theme-btn btn-sm"
-                        data-animation="fadeInUp"
-                        data-delay="1.3s"
-                        style={{ zIndex: "1" }}
-                      >
-                        Book an Appointment &nbsp;
-                        <MdKeyboardDoubleArrowRight />
-                      </Link>
-                    </div>
+                    {userRole === "PATIENT" && (
+                      <div className="theme-btn__wrapper d-flex justify-content-center">
+                        <Link
+                          to="/doctors"
+                          className="theme-btn btn-sm"
+                          data-animation="fadeInUp"
+                          data-delay="1.3s"
+                          style={{ zIndex: "1" }}
+                        >
+                          Book an Appointment &nbsp;
+                          <MdKeyboardDoubleArrowRight />
+                        </Link>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
