@@ -7,62 +7,75 @@ import {
   TableContainer,
   Paper,
   Button,
-  Modal,
-  Box,
-  Typography,
-  TextField,
 } from "@mui/material";
-import { saveAs } from "file-saver";
-import React, { useState, useRef } from "react";
+import { ProviderContext } from "../../components/Provider/Provider";
+import React, { useState, useEffect, useContext } from "react";
+import { getReportsForPatient } from "../../utils/EndpointUtils";
+import Modal from "react-modal";
+import html2pdf from "html2pdf.js";
 
 function Reports() {
-  const [data, setData] = useState([
-    { id: 1, testId: "ABC123", testType: "Type A", status: "Complete" },
-    { id: 2, testId: "DEF456", testType: "Type B", status: "Incomplete" },
-    { id: 3, testId: "GHI789", testType: "Type C", status: "Complete" },
-  ]);
+  const { axiosJWT } = useContext(ProviderContext);
+  const [data, setData] = useState([]);
+  const userId = sessionStorage.getItem("userId");
+  const userName = sessionStorage.getItem("userName");
 
-  const [open, setOpen] = useState(false);
-  const [selectedReport, setSelectedReport] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
 
-  // Reference for PDF export
-  const pdfRef = useRef();
+  const [selectedReport, setSelectedReport] = useState({
+    id: "",
+    doctorId: "",
+    patientId: "",
+    technicianId: "",
+    appointmentId: "",
+    description: "",
+    testType: "",
+    paymentStatus: "COMPLETE",
+    paramArray: [],
+    params: []
+  });
 
-  // Sample report data
-  const sampleReport = {
-    patientName: "John Doe",
-    doctorName: "Dr. Smith",
-    technicianName: "Emily Johnson",
-    testType: "Type A",
-    description: "This is a sample report description.",
-    date: "2024-03-15",
-    parameters: "Parameter 1: value, Parameter 2: value",
+  useEffect(() => {
+    getReportsForPatient(axiosJWT, userId)
+      .then((response) => {
+        setData(response);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching test types:", error);
+        setLoading(false);
+      });
+  }, [axiosJWT]);
+
+  const openModal = async (report) => {
+    try {
+      setSelectedReport({
+        id: report.id,
+        doctorId: report.doctorId,
+        patientId: report.patientId,
+        technicianId: report.technicianId,
+        appointmentId: report.appointmentId,
+        description: report.description,
+        testType: report.testType,
+        paramArray: report.paramArray
+      });
+      setModalIsOpen(true);
+    } catch (error) {
+      console.error("Error opening modal:", error);
+    }
   };
 
-  const handleOpen = () => {
-    setSelectedReport(sampleReport); // Set sample report data when opening modal
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
+  const closeModal = () => {
+    setModalIsOpen(false);
   };
 
   const handleDownloadPDF = () => {
-    // Get the element containing the modal content
-    const pdfContent = pdfRef.current;
+    const modalContent = document.querySelector('.print');
 
-    // Create a new jsPDF instance
-    const jsPDF = require("jspdf");
-    const doc = new jsPDF();
-
-    // Convert the modal content to PDF
-    doc.html(pdfContent, {
-      callback: function (pdf) {
-        // Save the PDF
-        pdf.save("report.pdf");
-      },
-    });
+    html2pdf()
+      .from(modalContent)
+      .save(`${selectedReport.testType}_Report.pdf`);
   };
 
   return (
@@ -85,7 +98,10 @@ function Reports() {
           <TableHead style={{ backgroundColor: "#d3f6e3" }}>
             <TableRow>
               <TableCell style={{ fontSize: "16px", fontWeight: "bold" }}>
-                Test ID
+                REPORT ID
+              </TableCell>
+              <TableCell style={{ fontSize: "16px", fontWeight: "bold" }}>
+                APPOINTMENT ID
               </TableCell>
               <TableCell style={{ fontSize: "16px", fontWeight: "bold" }}>
                 Test Type
@@ -99,25 +115,26 @@ function Reports() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((row) => (
+            {data.filter(report => report.paymentStatus === 'COMPLETE').map((row) => (
               <TableRow key={row.id}>
-                <TableCell>{row.testId}</TableCell>
+                <TableCell>R00{row.id}</TableCell>
+                <TableCell>A00{row.appointmentId}</TableCell>
                 <TableCell>{row.testType}</TableCell>
                 <TableCell>
                   <Button
                     disabled
                     style={{
-                      color: row.status === "Complete" ? "green" : "red",
+                      color: row.paymentStatus === "COMPLETE" ? "green" : "red",
                     }}
                   >
-                    {row.status}
+                    {row.paymentStatus}
                   </Button>
                 </TableCell>
                 <TableCell>
                   <Button
                     variant="contained"
                     color="primary"
-                    onClick={handleOpen}
+                    onClick={() => openModal(row)}
                   >
                     View
                   </Button>
@@ -127,94 +144,80 @@ function Reports() {
           </TableBody>
         </Table>
       </TableContainer>
-      <Modal open={open} onClose={handleClose}>
-        <Box
-          ref={pdfRef} // Reference for PDF export
-          sx={{
-            position: "absolute",
-            width: 400,
-            bgcolor: "background.paper",
-            borderRadius: 8,
-            p: 4,
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-          }}
-        >
-          <Box
-            sx={{
-              backgroundColor: "#d3f6e3",
-              borderRadius: "8px 8px 0 0",
-              p: 2,
-              mb: 2,
+
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        contentLabel="Enter Test Data To The Report"
+        style={{
+          overlay: {
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+          },
+          content: {
+            width: "50%",
+            height: "auto",
+            maxWidth: "800px",
+            maxHeight: "85%",
+            margin: "auto",
+            padding: "20px",
+            borderRadius: "10px",
+            boxShadow: "0 0 10px rgba(0, 0, 0, 0.3)",
+            overflow: "auto",
+          },
+        }}
+      >
+        <div style={{ marginBottom: "20px", textAlign: "right" }}>
+          <button
+            type="button"
+            onClick={closeModal}
+            style={{
+              backgroundColor: "transparent",
+              border: "none",
+              cursor: "pointer",
+              fontSize: "20px",
             }}
           >
-            <Typography variant="h6" align="center">
-              Report
-            </Typography>
-          </Box>
-          <TextField
-            label="Patient Name"
-            value={selectedReport?.patientName || ""}
-            fullWidth
-            disabled
-            sx={{ mb: 2, color: "black" }} // Set color to black
-          />
-          <TextField
-            label="Doctor Name"
-            value={selectedReport?.doctorName || ""}
-            fullWidth
-            disabled
-            sx={{ mb: 2, color: "black" }} // Set color to black
-          />
-          <TextField
-            label="Technician Name"
-            value={selectedReport?.technicianName || ""}
-            fullWidth
-            disabled
-            sx={{ mb: 2, color: "black" }} // Set color to black
-          />
-          <TextField
-            label="Test Type"
-            value={selectedReport?.testType || ""}
-            fullWidth
-            disabled
-            sx={{ mb: 2, color: "black" }} // Set color to black
-          />
-          <TextField
-            label="Description"
-            value={selectedReport?.description || ""}
-            fullWidth
-            disabled
-            sx={{ mb: 2, color: "black" }} // Set color to black
-          />
-          <TextField
-            label="Date"
-            value={selectedReport?.date || ""}
-            fullWidth
-            disabled
-            sx={{ mb: 2, color: "black" }} // Set color to black
-          />
-          <TextField
-            label="Parameters"
-            value={selectedReport?.parameters || ""}
-            fullWidth
-            disabled
-            sx={{ mb: 2, color: "black" }} // Set color to black
-          />
-          <Box sx={{ display: "flex", justifyContent: "center" }}>
-            <Button
-              variant="contained"
-              color="success"
-              onClick={handleDownloadPDF}
-            >
-              Download
-            </Button>
-          </Box>
-        </Box>
+            &times;
+          </button>
+        </div>
+        <div className="print">
+          <h2 style={{ textAlign: "center", marginBottom: "20px", color: 'green' }}>
+            {selectedReport.testType} Report
+          </h2>
+          <div className="mx-5">
+            <div style={{ marginBottom: "20px" }}>
+              <p><strong>Patient Name:</strong> {userName}</p>
+              <p><strong>Doctor ID:</strong> {selectedReport.doctorId}</p>
+              <p><strong>Technician ID:</strong> {selectedReport.technicianId}</p>
+              <p><strong>Appointment ID:</strong> {selectedReport.appointmentId}</p>
+              <p><strong>Description:</strong> {selectedReport.description}</p>
+            </div>
+            <div>
+              <h5 className="text-primary">Test Result:</h5>
+              <ul className="mx-5">
+                {Object.entries(selectedReport.paramArray).map(([param, value]) => (
+                  <li key={param}>
+                    {param}: {value}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="mt-5" style={{ display: 'flex', justifyContent: 'center' }}>
+              <Button
+                className="mx-10"
+                variant="contained"
+                color="success"
+                onClick={handleDownloadPDF}
+              >
+                DOWNLOAD THE REPORT
+              </Button>
+            </div>
+          </div>
+        </div>
       </Modal>
     </>
   );
 }
 
 export default Reports;
+

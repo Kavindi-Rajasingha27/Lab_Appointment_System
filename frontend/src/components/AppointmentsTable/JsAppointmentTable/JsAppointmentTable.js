@@ -2,7 +2,19 @@ import { AiFillDelete } from "react-icons/ai";
 import { deleteAppointment } from "../../../utils/EndpointUtils";
 
 const JsAppointmentTable = ({ appointmentsLst, axiosJWT }) => {
-  console.log(appointmentsLst);
+
+  const formatDate = (dateTimeString) => {
+    const date = new Date(dateTimeString);
+    return isNaN(date) ? "" : date.toISOString().split("T")[0];
+  };
+
+  const formatTime = (dateTimeString) => {
+    const date = new Date(dateTimeString);
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+    return `${hours}:${minutes}`;
+  };
+
   return (
     <>
       <div style={{ marginRight: "50px" }}>
@@ -21,9 +33,8 @@ const JsAppointmentTable = ({ appointmentsLst, axiosJWT }) => {
           <thead>
             <tr>
               <th scope="col">Appointment No</th>
-              <th scope="col"></th>
-              <th scope="col"></th>
-              <th scope="col">Date & Time</th>
+              <th scope="col">Date</th>
+              <th scope="col">Time</th>
               <th scope="col" style={{ textAlign: "center" }}>
                 Status
               </th>
@@ -36,16 +47,17 @@ const JsAppointmentTable = ({ appointmentsLst, axiosJWT }) => {
             {appointmentsLst.map((item) => (
               <tr key={item.id}>
                 <th scope="row">{item.id}</th>
-                <td>{}</td>
-                <td>{}</td>
-                <td>{item.dateTime}</td>
+                <td>{formatDate(item.dateTime)}</td>
+                <td>{formatTime(item.dateTime)}</td>{" "}
                 <td style={{ textAlign: "center" }}>
                   <div
                     className={`btn btn-lg ${
-                      item.status === "complete"
+                      item.payStatus === "PENDING"
                         ? "btn-secondary"
-                        : item.status === "active"
+                        : item.payStatus === "ASSIGNED"
                         ? "btn-primary"
+                        : item.payStatus === "PAID"
+                        ? "btn-success"
                         : "disabled"
                     }`}
                     style={{
@@ -54,11 +66,13 @@ const JsAppointmentTable = ({ appointmentsLst, axiosJWT }) => {
                       fontSize: "12px",
                     }}
                   >
-                    {item.status === "complete"
-                      ? "completed"
-                      : item.status === "active"
-                      ? "active"
-                      : "rejected"}
+                    {item.payStatus === "PENDING"
+                      ? "PENDING"
+                      : item.payStatus === "PAID"
+                      ? "PAID"
+                      : item.payStatus === "ASSIGNED"
+                      ? "ASSIGNED"
+                      : "CANCELLED"}
                   </div>
                 </td>
                 <td style={{ textAlign: "center" }}>
@@ -68,6 +82,13 @@ const JsAppointmentTable = ({ appointmentsLst, axiosJWT }) => {
                       className="btn btn-danger"
                       style={{ borderRadius: "50px" }}
                       onClick={() => deleteAppointment(axiosJWT, item.id)}
+                      disabled={
+                        item.payStatus === "PAID"
+                          ? true
+                          : item.payStatus === "ASSIGNED"
+                          ? true
+                          : false
+                      }
                     >
                       <AiFillDelete
                         style={{ marginBottom: "4px", marginRight: "4px" }}

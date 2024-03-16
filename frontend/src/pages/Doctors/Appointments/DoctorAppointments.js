@@ -101,9 +101,9 @@ function DoctorAppointments() {
                     <thead>
                       <tr>
                         <th scope="col">No</th>
-                        <th scope="col">Appointment Id</th>
-                        <th scope="col">Start date</th>
-                        <th scope="col">Start time</th>
+                        <th scope="col">Appointment No</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Time</th>
                         <th scope="col">Status</th>
                         <th scope="col">Actions</th>
                       </tr>
@@ -119,7 +119,7 @@ function DoctorAppointments() {
                             <td>{appointment.id}</td>
                             <td>{formatDate(appointment.dateTime)}</td>
                             <td>{formatTime(appointment.dateTime)}</td>
-                            <td>PENDING</td>
+                            <td>{appointment.payStatus}</td>
                             <td>
                               <button
                                 className="btn btn-success mx-1"
@@ -188,7 +188,7 @@ function DoctorAppointments() {
           <h3 className="mb-4">Assign New Test</h3>
           <form>
           <div>
-              <label htmlFor="startTime">Appointment Id</label>
+              <label htmlFor="startTime">Appointment No</label>
               <input
                 className="form-control mb-4"
                 id="startDate"
