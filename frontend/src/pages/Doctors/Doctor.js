@@ -24,11 +24,9 @@ export default function Doctor() {
   const openModal = (doctor) => {
     setSelectedDoctor(doctor);
     setIsModalOpen(true);
-    console.log("selectedDoctor", doctor.id);
 
     getAvailableTimeSlots(axiosJWT, doctor.id, (times) => {
       setAvailableTimeSlot(times.body);
-      console.log("times", times.body);
     });
   };
 
@@ -39,8 +37,6 @@ export default function Doctor() {
   };
 
   const [doctorsLstIsEmpty, setDoctorsLstIsEmpty] = useState("");
-
-  // console.log(doctorsLst);
 
   useEffect(() => {
     getUsersByRole(axiosJWT, "doctor", setDoctorsLst);

@@ -1,6 +1,6 @@
 import axios from "axios";
-import Swal from "sweetalert2";
 import { format } from "date-fns";
+import Swal from "sweetalert2";
 
 export const handleSignUp = async (
   e,
@@ -131,7 +131,7 @@ export const getAppointments = async (axiosJWT, setAppointmentsLst) => {
         authorization: "Bearer " + sessionStorage.getItem("accessToken"),
       },
     });
-    setAppointmentsLst(res.data.reverse());
+    setAppointmentsLst(res.data.body);
   } catch (err) {
     console.log(err);
     Swal.fire({
@@ -341,7 +341,7 @@ export const addAvailableTime = async (
         },
       }
     );
-
+    window.location.reload();
     Swal.fire({
       position: "center",
       icon: "success",
@@ -350,6 +350,7 @@ export const addAvailableTime = async (
       showConfirmButton: false,
       timer: 3000,
     });
+
   } catch (err) {
     console.log(err);
     Swal.fire({
@@ -457,6 +458,30 @@ export const getReportsForTechnician = async (axiosJWT, technicianId) => {
   try {
     const res = await axiosJWT.get(
       `http://localhost:8080/report/technician/${technicianId}`,
+      {
+        headers: {
+          authorization: "Bearer " + sessionStorage.getItem("accessToken"),
+        },
+      }
+    );
+    return res.data.body.reverse();
+  } catch (err) {
+    console.log(err);
+    Swal.fire({
+      position: "center",
+      icon: "error",
+      title: "Server Error",
+      text: "Oops! Something went wrong while getting reports.",
+      showConfirmButton: false,
+      timer: 5000,
+    });
+  }
+};
+
+export const getReportsForPatient = async (axiosJWT, patientId) => {
+  try {
+    const res = await axiosJWT.get(
+      `http://localhost:8080/report/patient/${patientId}`,
       {
         headers: {
           authorization: "Bearer " + sessionStorage.getItem("accessToken"),
@@ -609,6 +634,36 @@ export const completeReport = async (axiosJWT, selectedReport) => {
         },
       }
     );
+    window.location.reload();
+    Swal.fire({
+      position: "center",
+      icon: "success",
+      title: "Report Completed",
+      text: "The Report Test Data has been successfully added.",
+      showConfirmButton: false,
+      timer: 3000,
+    });
+  } catch (err) {
+    console.log(err);
+    Swal.fire({
+      position: "center",
+      icon: "error",
+      title: "Server Error",
+      text: "Oops! Something went wrong while adding test data to the report.",
+      showConfirmButton: false,
+      timer: 5000,
+    });
+  }
+};
+
+export const updateReportPaymentStatus = async (axiosJWT, selectedReport) => {
+  try {
+
+    await axiosJWT.post(`http://localhost:8080/report/update`, selectedReport, {
+      headers: {
+        authorization: "Bearer " + sessionStorage.getItem("accessToken"),
+      },
+    });
     window.location.reload();
     Swal.fire({
       position: "center",

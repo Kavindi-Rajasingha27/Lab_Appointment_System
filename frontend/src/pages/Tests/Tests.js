@@ -1,51 +1,66 @@
-import React, { useState, useEffect } from "react";
+import emailjs from "@emailjs/browser";
 import {
+  Button,
+  Modal,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Button,
-  Paper,
-  Modal,
   TextField,
 } from "@mui/material";
+import { useContext, useEffect, useState } from "react";
+import Swal from "sweetalert2";
+import { ProviderContext } from "../../components/Provider/Provider";
+import {
+  getAllTestTypes,
+  getReportsForPatient,
+  updateReportPaymentStatus,
+} from "../../utils/EndpointUtils";
 
 const Tests = () => {
-  const [tests, setTests] = useState([
-    {
-      id: 1,
-      testType: "Blood Test",
-      paymentStatus: "Pending",
-      appointmentId: "A001",
-      price: "Rs 5000",
-    },
-    {
-      id: 2,
-      testType: "Urine Test",
-      paymentStatus: "Paid",
-      appointmentId: "A002",
-      price: "Rs 4000",
-    },
-  ]);
+  const { axiosJWT } = useContext(ProviderContext);
+  const [loading, setLoading] = useState(true);
+  const userId = sessionStorage.getItem("userId");
+  const [tests, setTests] = useState([]);
+  const [allTestTypes, setAllTestTypes] = useState([]);
+  const [price, setPrice] = useState(0);
+
+  useEffect(() => {
+    getReportsForPatient(axiosJWT, userId)
+      .then((response) => {
+        setTests(response);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching test types:", error);
+        setLoading(false);
+      });
+    getAllTestTypes(axiosJWT)
+      .then((response) => {
+          setAllTestTypes(response);
+          setLoading(false);
+      })
+      .catch((error) => {
+          console.error("Error fetching test types:", error);
+          setLoading(false);
+      });
+  }, [axiosJWT]);
 
   const [openModal, setOpenModal] = useState(false);
   const [selectedTest, setSelectedTest] = useState(null);
 
-  const handlePaymentClick = (id) => {
-    const selectedTest = tests.find((test) => test.id === id);
-    setSelectedTest(selectedTest);
-    setOpenModal(true);
-  };
+  const [reportId, setReportId] = useState();
 
-  const handlePaymentConfirm = () => {
-    setTests((prevTests) =>
-      prevTests.map((test) =>
-        test.id === selectedTest.id ? { ...test, paymentStatus: "Paid" } : test
-      )
-    );
-    setOpenModal(false);
+  const handlePaymentClick = (id) => {
+    // setReportId(id);
+    const selectedTest = tests.find((test) => test.id === id);
+    const selectedReportTest = allTestTypes.filter(test => test.type === selectedTest.testType);
+    setSelectedTest(selectedTest);
+    setPrice(selectedReportTest[0].price);
+    setOpenModal(true);
   };
 
   const handleCloseModal = () => {
@@ -89,9 +104,80 @@ const Tests = () => {
     setIsCvvValid(cvvRegex.test(value));
   };
 
+  const [data, setData] = useState({
+    toName: sessionStorage.getItem("userName"),
+    toEmail: email,
+    fromName: "",
+    subject: "Payment Confirmation Email",
+    message: `Your Payment is successfully received.`,
+  });
+  
   const handleEmailChange = (event) => {
-    const { value } = event.target;
-    setEmail(value);
+    setData({
+      ...data,
+      toEmail: event.target.value,
+      message: `We hope this email finds you well.\n\nWe wanted to inform you that your payment for the ${selectedTest.testType} has been successfully received.\n\nIf you have any questions or concerns, feel free to reach out to us.\n\nThank you,\nLabCare`
+    });
+    setEmail(event.target.value);
+  }; 
+  
+
+  const sendEmail = () => {
+    console.log(data);
+    const SERVICE_ID = "service_6d6h9ds";
+    const TEMPLATE_ID = "template_7v4wq3w";
+    const PUBLIC_KEY = "6mbl40ndg7KDNdgsv";
+
+    emailjs.send(SERVICE_ID, TEMPLATE_ID, data, PUBLIC_KEY).then(
+      (response) => {
+        console.log("SUCCESS!", response.status, response.text);
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          text: "Email sent successfully!",
+          showConfirmButton: false,
+          timer: 3500,
+        });
+        setData({
+          name: "",
+          email: "",
+          subject: "",
+          message: "",
+        });
+      },
+      (error) => {
+        console.log("FAILED...", error);
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          text: "Failed to send email. Please try again later.",
+          showConfirmButton: false,
+          timer: 3500,
+        });
+        setData({
+          name: "",
+          email: "",
+          subject: "",
+          message: "",
+        });
+      }
+    );
+  };
+
+  const [selectedReport, setSelectedReport] = useState({});
+
+  const handlePaymentConfirm = () => {
+    sendEmail();
+    setTimeout(() => {
+      updateReportPaymentStatus(axiosJWT, selectedReport);
+    }, 2000);
+    // setTests((prevTests) =>
+    //   prevTests.map((test) =>
+    //     test.id === selectedTest.id ? { ...test, paymentStatus: "Paid" } : test
+    //   )
+    // );
+
+    setOpenModal(false);
   };
 
   const handleEmailBlur = () => {
@@ -126,14 +212,14 @@ const Tests = () => {
         <Table>
           <TableHead style={{ backgroundColor: "#d4edda" }}>
             <TableRow>
+            <TableCell style={{ fontSize: "16px", fontWeight: "bold" }}>
+                Test ID
+              </TableCell>
               <TableCell style={{ fontSize: "16px", fontWeight: "bold" }}>
                 Appointment ID
               </TableCell>
               <TableCell style={{ fontSize: "16px", fontWeight: "bold" }}>
                 Test type
-              </TableCell>
-              <TableCell style={{ fontSize: "16px", fontWeight: "bold" }}>
-                Price
               </TableCell>
               <TableCell style={{ fontSize: "16px", fontWeight: "bold" }}>
                 Payment Status
@@ -144,18 +230,18 @@ const Tests = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {tests.map((test) => (
+            {tests.filter(report => report.paymentStatus === 'PENDING').map((test) => (
               <TableRow key={test.id}>
-                <TableCell>{test.appointmentId}</TableCell>
+                <TableCell>T00{test.id}</TableCell>
+                <TableCell>A00{test.appointmentId}</TableCell>
                 <TableCell>{test.testType}</TableCell>
-                <TableCell>{test.price}</TableCell>
                 <TableCell>
                   <Button
                     variant="contained"
                     color={
                       test.paymentStatus === "Pending" ? "error" : "success"
                     }
-                    disabled={test.paymentStatus === "Paid"}
+                    disabled={test.paymentStatus === "PAID"}
                   >
                     {test.paymentStatus}
                   </Button>
@@ -164,8 +250,21 @@ const Tests = () => {
                   <Button
                     variant="contained"
                     color="success"
-                    onClick={() => handlePaymentClick(test.id)}
-                    disabled={test.paymentStatus === "Paid"}
+                    onClick={() => {
+                      setReportId(test.id);
+                      setSelectedReport((prevReport) => ({
+                        ...prevReport,
+                        id: test.id,
+                        testType: test.testType,
+                        doctorId: test.doctorId,
+                        patientId: test.patientId,
+                        appointmentId: test.appointmentId,
+                        technicianId: test.technicianId,
+                        paymentStatus: "PAID"
+                    }))
+                      handlePaymentClick(test.id);
+                    }}
+                    disabled={!test.paymentStatus === "PENDING"}
                   >
                     Pay
                   </Button>
@@ -265,9 +364,10 @@ const Tests = () => {
             label="Price"
             variant="outlined"
             fullWidth
-            value={selectedTest ? selectedTest.price : ""}
+            value={price ? price : ""}
             required
             style={{ marginBottom: 10 }}
+            disabled= {price}
           />
 
           <TextField

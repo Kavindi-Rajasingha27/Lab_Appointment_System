@@ -101,11 +101,6 @@ export const sideNavigationPatientLinks = [
     to: "/doctors",
   },
   {
-    icon: <RiProfileFill className="icon-css text-success" size={22} />,
-    title: "Profile",
-    to: "/UserProfile",
-  },
-  {
     icon: <RiTestTubeFill className="icon-css text-success" size={22} />,
     title: "Tests",
     to: "/Tests",
@@ -114,6 +109,11 @@ export const sideNavigationPatientLinks = [
     icon: <RiFileList3Line className="icon-css text-success" size={22} />,
     title: "Reports",
     to: "/Reports",
+  },
+  {
+    icon: <RiProfileFill className="icon-css text-success" size={22} />,
+    title: "Profile",
+    to: "/UserProfile",
   },
 ];
 
