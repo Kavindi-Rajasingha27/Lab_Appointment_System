@@ -70,6 +70,7 @@ export const handleSignIn = async (
 
     sessionStorage.setItem("userId", body.user.id);
     sessionStorage.setItem("userName", body.user.firstName);
+    sessionStorage.setItem("userRole", body.user.role);
     sessionStorage.setItem("accessToken", body.token);
     sessionStorage.setItem("userType", body.user.role);
     sessionStorage.setItem("userEmail", body.user.email);
