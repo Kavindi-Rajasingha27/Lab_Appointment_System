@@ -55,7 +55,6 @@ const Tests = () => {
   const [reportId, setReportId] = useState();
 
   const handlePaymentClick = (id) => {
-    // setReportId(id);
     const selectedTest = tests.find((test) => test.id === id);
     const selectedReportTest = allTestTypes.filter(test => test.type === selectedTest.testType);
     setSelectedTest(selectedTest);
@@ -123,10 +122,9 @@ const Tests = () => {
   
 
   const sendEmail = () => {
-    console.log(data);
-    const SERVICE_ID = "service_6d6h9ds";
-    const TEMPLATE_ID = "template_7v4wq3w";
-    const PUBLIC_KEY = "6mbl40ndg7KDNdgsv";
+    const SERVICE_ID = "YOUR_SERVICE_ID";
+    const TEMPLATE_ID = "YOUR_TEMPLATE_ID";
+    const PUBLIC_KEY = "YOUR_PUBLIC_KEY";
 
     emailjs.send(SERVICE_ID, TEMPLATE_ID, data, PUBLIC_KEY).then(
       (response) => {
